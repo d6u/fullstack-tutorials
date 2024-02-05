@@ -13,7 +13,7 @@ Make sure you have followed this guide to prepare your system with necessary sof
 Make sure docker is up and running by running these in terminal:
 
 ```sh
-$ docker version
+docker version
 ```
 
 You should see something like:
@@ -50,7 +50,7 @@ This means docker engine is not current running, trying start Docker app located
 
 We will be using docker compose to start a postgres container locally.
 
-In a directory you desire, e.g. fullstack-tutorials, create a `compose.yml` file with content:
+In a directory you desire, e.g. **fullstack-tutorials**, create a `compose.yml` file with content:
 
 ```yaml
 version: '3.1'
@@ -73,3 +73,26 @@ services:
 * The password is configure to be `example`.
 * A default database called `postgres` will be created.
 
+Use docker compose to start containers in terminal:
+
+```shell
+docker compose up
+```
+
+Wait a little bit, after the you see
+
+```
+LOG:  database system is ready to accept connections
+```
+
+in the output, open Docker app, navigate to Containers tab on the left side bar, you should be able to see **fullstack-tutorials** (this is the same of the directory used at the beginning of Step 2, we used **fullstack-tutorials** here) item in the Containers list.
+
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+You should be able to see two contains running. This means this step is successful.
+
+Keep `docker compose up` running in the terminal for now and move to next page.
+
+{% hint style="info" %}
+If you want to stop contains from running, just press CTRL + C to stop `docker compose up`. Next time just run `docker compose up` to start the contains again.
+{% endhint %}
