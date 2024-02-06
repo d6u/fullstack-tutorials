@@ -4,6 +4,12 @@
 * We will be using **pg** npm package. **pg**, a.k.a. **node-postgres**, is a low level Postgres client that offers basic functionalities to connect and run queries against a Postgres server. This will offer essentaily understanding of how to work with postgres databases programmatically.
 * We will introduce a more advanced ORM (Object Relationship Mapper) library to interact with Postgres, which will include a lot of convenient features, but also requires to learn more concept and write more code. Using ORM in product is high encouraged to avoid common problems are not familiarized by developers.
 
+You can skip this page and jump into the ORM tutorial:
+
+{% content-ref url="orm-object-relationship-mapper-with-postgres.md" %}
+[orm-object-relationship-mapper-with-postgres.md](orm-object-relationship-mapper-with-postgres.md)
+{% endcontent-ref %}
+
 ## Step 1
 
 In the desired directory (highly recommend to keep using the same directly throughout this tutorial, e.g. **fullstack-tutorials**), initialized a `package.json` file by running:
