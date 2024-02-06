@@ -1,6 +1,6 @@
 # Interact with Postgres without Writing Code
 
-* **Interact with Postgres without writing code is very helpful when trying to inspect the data in the databases directly.**
+* **Interact with Postgres without writing code is very helpful when trying to inspect or interact with the data in the databases directly.**
 * There are two main ways to interact with Postgres without writing code. One is using a GUI (Graphic User Interface), the other is through command line.
 
 ## Interact with Postgres Using GUI
@@ -21,26 +21,26 @@ in `docker compose up` output, or simply wait a little bit for the containers to
 
 Open your browser and open [http://localhost:8080](http://localhost:8080) page, you should be able see a web page that looks like:
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 This is the Adminer UI, which is the GUI that we will use to interact with Postgres.
 
 ## Step 1: Login
 
 * In the System dropdown, select PostgreSQL.
-* In Server input, enter `db`.
-* In Username, enter `postgres`
-* In Password, enter `example`
-* In Database, enter `postgres`
-* Check Permanent Login checkbox for convenience.
+* In Server input, enter `db`. (This is the service name for Postgres container defined in `compose.yml`.)
+* In Username, enter `postgres`.
+* In Password, enter `example`.
+* In Database, enter `postgres`.
+* Check **Permanent Login** checkbox for convenience.
 
-Click Login, it should then enter this view:
+Click **Login**, it should then enter this view:
 
 <figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
-This means the login is successful.
+This means we logged in successfully.
 
-## Step 2: (Optional) Create Schema
+## Step 2: (Optional) Create Table
 
 {% hint style="info" %}
 This step is for getting you familiar with features in Adminer.
@@ -52,10 +52,10 @@ Navigate to SQL command page in the left sidebar. Enter create table SQL command
 
 ```sql
 create table example_books (
-  id SERIAL PRIMARY KEY, 
-  name VARCHAR NOT NULL,
-  description VARCHAR
-)
+  id serial primary key,
+  name varchar not null,
+  description varchar
+);
 ```
 
 Click **Execute** button under the text box. You will see

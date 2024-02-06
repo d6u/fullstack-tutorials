@@ -20,17 +20,34 @@ npm init
 
 You can use all default values for the `package.json`.
 
-Once `package.json` is created, open it and add:
+Once `package.json` is created, open it in an editor and add:
 
 ```json
 "type": "module",
 ```
 
-to it to enable modern syntax.
+to it to enable modern features.
 
 {% hint style="success" %}
 Modern syntax allows you use `import` instead of `require`, `import` is used by most articles today.
 {% endhint %}
+
+The `package.json` should look like:
+
+```json
+{
+  "name": "fullstack-tutorials",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
+```
 
 ## Step 2
 
@@ -40,7 +57,15 @@ Install **pg** package and save it to `package.json`:
 npm i -S pg
 ```
 
-## Step 3
+You should see a new `dependencies` entry in `package.json`:
+
+```json
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+```
+
+## Step 3: Select Rows
 
 Create a JavaScript file at `scripts/select-all-books.js`:
 
@@ -77,13 +102,21 @@ Execute the script:
 node scripts/select-books.js
 ```
 
-Assume you have gone through this tutorial:
+If you haven't gone through this tutorial:
 
 {% content-ref url="interact-with-postgres-without-writing-code.md" %}
 [interact-with-postgres-without-writing-code.md](interact-with-postgres-without-writing-code.md)
 {% endcontent-ref %}
 
-You should already have records in the database table. You will see output like this:
+You will see error output:
+
+```
+error: relation "example_books" does not exist
+```
+
+Don't worry just go to Step 4.
+
+If have complete that tutorial, you should already have records in the database table. You will see output like this:
 
 ```javascript
 [
@@ -101,8 +134,135 @@ If you change the SQL query to `SELECT id, name FROM example_books`, and run the
 [ { id: 1, name: 'Fullstack Tutorials' } ]
 ```
 
-You can also run `CREATE TABLE` command like you did in using `client.query()`:
+If you haven't gone through the previous tutorial, continue in Step 4.
 
-{% content-ref url="interact-with-postgres-without-writing-code.md" %}
-[interact-with-postgres-without-writing-code.md](interact-with-postgres-without-writing-code.md)
-{% endcontent-ref %}
+## Step 4: Create Table
+
+If you haven't gone through the previous tutorial, you won't have a table yet. You can create the table using a script.
+
+Create a JavaScript file at `scripts/create-example-books-table.js`:
+
+```javascript
+import pg from "pg";
+
+const client = new pg.Client({
+  connectionString: "postgres://postgres:example@localhost:5432/postgres",
+});
+await client.connect();
+
+await client.query(`
+  create table example_books (
+    id serial primary key,
+    name varchar not null,
+    description varchar
+  );
+`);
+
+await client.end();
+```
+
+Run the script:
+
+```sh
+node scripts/create-example-books-table.js
+```
+
+The command should finish silently without any error.
+
+Go to [http://localhost:8080/](http://localhost:8080/) (you might need to refresh) and go to select view, you should see an table with no rows:
+
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+This means the table is successfully created.
+
+## Step 5: Insert Rows
+
+Create a JavaScript file at `scripts/add-books.js`:
+
+```javascript
+import pg from "pg";
+
+const client = new pg.Client({
+  connectionString: "postgres://postgres:example@localhost:5432/postgres",
+});
+await client.connect();
+
+await client.query(`
+  insert into example_books (name, description)
+  values ('Fullstack Tutorials pt1', 'A tutorial for fullstack development'),
+  ('Fullstack Tutorials pt2', 'A tutorial for even more fullstack development');
+`);
+
+await client.end();
+```
+
+Run the script:
+
+```sh
+node scripts/add-books.js
+```
+
+Go to [http://localhost:8080/](http://localhost:8080/), you should see:
+
+<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+If you run the select script:
+
+```sh
+node scripts/select-books.js
+```
+
+You should see a couple records in the output:
+
+```javascript
+[
+  {
+    id: 1,
+    name: 'Fullstack Tutorials pt1',
+    description: 'A tutorial for fullstack development'
+  },
+  {
+    id: 2,
+    name: 'Fullstack Tutorials pt2',
+    description: 'A tutorial for even more fullstack development'
+  }
+]
+```
+
+## Step 6: Refactor
+
+You might have noticed we have repeated some code three times in our scripts. We can use some refactoring here.
+
+Create a JavaScript file at `database/client.js`:
+
+```javascript
+import pg from "pg";
+
+const client = new pg.Client({
+  connectionString: "postgres://postgres:example@localhost:5432/postgres",
+});
+
+await client.connect();
+
+export default client;
+```
+
+We can then replace some code in `scripts/select-books.js`, it will become:
+
+```javascript
+import client from "../database/client.js";
+
+const res = await client.query("SELECT * FROM example_books");
+
+console.log(res.rows);
+
+await client.end();
+```
+
+You can repeat this for other files as well.
+
+Run the script to confirm it's working:
+
+```sh
+node scripts/select-books.js
+```
