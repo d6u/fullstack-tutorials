@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+type Book = {
+  id: number;
+  name: string;
+  description: string;
+};
+
 function App() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3000/books")
