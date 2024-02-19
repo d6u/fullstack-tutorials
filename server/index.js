@@ -9,7 +9,31 @@ const app = express();
 app.use(cors());
 
 app.get("/books", async (req, res) => {
-  const allBooks = await prisma.exampleBook.findMany();
+  if (req.query.q == null || req.query.q === "") {
+    const allBooks = await prisma.exampleBook.findMany();
+    res.send(allBooks);
+    return;
+  }
+
+  const allBooks = await prisma.exampleBook.findMany({
+    where: {
+      OR: [
+        {
+          name: {
+            contains: req.query.q,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: req.query.q,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+  });
+
   res.send(allBooks);
 });
 
